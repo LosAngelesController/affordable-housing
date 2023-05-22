@@ -1,0 +1,7 @@
+{
+  apps : [{
+    name   : "housing",
+    script : "npm",
+    args   :"run yeonseistart"
+  }]
+}
