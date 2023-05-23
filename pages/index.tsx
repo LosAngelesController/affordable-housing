@@ -23,6 +23,7 @@ import * as turf from '@turf/turf'
        import { assertDeclareExportAllDeclaration } from '@babel/types';
 
 import {DisclaimerPopup} from '../components/Disclaimer'
+import { Checkbox } from '@mantine/core'
 
 function isTouchScreen() {
   return window.matchMedia('(hover: none)').matches;
@@ -46,27 +47,27 @@ const Home: NextPage = () => {
   
 
   const councilDistricts = [
-    { id: 1, name: '1 - Gilbert Cedillo' },
-    { id: 2, name: '2 - Paul Krekorian' },
-    { id: 3, name: '3 - Bob Blumenfield' },
-    { id: 4, name: '4 - Nithya Raman ' },
-    { id: 5, name: '5 - Paul Koretz' },
-    { id: 6, name: '6 - Nury Martinez ' },
-    { id: 7, name: '7 - Monica Rodriguez ' },
-    { id: 8, name: '8 - Marqueece Harris-Dawson ' },
-    { id: 9, name: '9 - Curren D. Price Jr. ' },
-    { id: 10, name: '10 - Office of District 10' },
-    { id: 11, name: '11 - Mike Bonin ' },
-    { id: 12, name: '12 - John Lee' },
-    { id: 13, name: '13 - Mitch O Farrell' },
-    { id: 14, name: '14 - Kevin de Leon' },
-    { id: 15, name: '15 - Joe Buscaino' },
-     
+   '1 - Gilbert Cedillo' ,
+   '2 - Paul Krekorian' ,
+   '3 - Bob Blumenfield' ,
+   '4 - Nithya Raman ' ,
+   '5 - Paul Koretz' ,
+   '6 - Nury Martinez ' ,
+   '7 - Monica Rodriguez ' ,
+   '8 - Marqueece Harris-Dawson ' ,
+   '9 - Curren D. Price Jr. ' ,
+    '10 - Office of District 10' ,
+    '11 - Mike Bonin ' ,
+     '12 - John Lee' ,
+     '13 - Mitch O Farrell' ,
+     '14 - Kevin de Leon' ,
+     '15 - Joe Buscaino' ,
   ];
 
    const [selectedfilteropened, setselectedfilteropened] = useState("CD#");
    const [filteredcouncildistricts, setfilteredcouncildistricts] =
-   useState<string>("");
+   useState<string[]>(optionsCd.map((option)=>option));
+  //  console.log(filteredcouncildistricts)
   function closeModal() {
     setDisclaimerOpen(false)
   }
@@ -74,9 +75,9 @@ const Home: NextPage = () => {
   
 
   const setfilteredcouncildistrictspre = (event: any) => {
-    debugger
-  // console.log(CouncilDist.features[0].geometry)
+    // debugger
    if(event == ""){
+    setfilteredcouncildistricts(event);
     setSelectAll(!selectAll)
    }else if(event == "sndk"){
    
@@ -84,13 +85,16 @@ const Home: NextPage = () => {
   mapref.current.setLayoutProperty("AffordableHousingCovenants-8zpehi", 'visibility', 'none');
   mapref.current.setLayoutProperty("housing-layer", 'visibility', 'none');
    }else{
-    const value = event.target.value;
+    const value = event;
     setfilteredcouncildistricts(value);
     const optionsC = CouncilDist.features.filter(
-      (feature) => feature.properties.dist_name === value
+      (feature) => value.includes(feature.properties.dist_name)
     );
-    const coordinates = optionsC[0].geometry;
-    mapref.current.setFilter("housinglayer", ["within", coordinates]);
+    const coordinates = optionsC.map((option)=> option.geometry);
+    const filters = coordinates.map((coordinate) => ["within", coordinate]);
+
+    mapref.current.setFilter("housinglayer", ["any", ...filters]);
+    
    }
   };
 
@@ -806,6 +810,7 @@ const popup = new mapboxgl.Popup({
     <br><strong>AH 5BR Unit #</strong> ${e.features[0].properties["AH 5BR Unit #"] ? `${e.features[0].properties["AH 5BR Unit #"]}` : "None"}<br><b>Click for more info.</b>;
     <br><strong>AH 6BR Unit #</strong> ${e.features[0].properties["AH 6BR Unit #"] ? `${e.features[0].properties["AH 6BR Unit #"]}` : "None"}<br><b>Click for more info.</b>`;
 
+    
   //console.log(e.features)
   
     // Ensure that if the map is zoomed out such that multiple
@@ -981,23 +986,40 @@ useEffect(()=>{
                             className="align-middle text-white rounded-lg px-1  border border-gray-400 text-sm md:text-base"
                             onClick={() => {
                              
-                              setfilteredcouncildistricts("Selected All");
+                              setfilteredcouncildistricts(optionsCd.map((option)=> option));
                               setfilteredcouncildistrictspre("");
                             }}
                           >
                             Select All
                           </button><br></br>
-                        <select
-                          value={filteredcouncildistricts}
-                          onChange={setfilteredcouncildistrictspre}
-                        >
-                          <option value="">Select CD</option>
-                          {optionsCd.map((option) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
+                        
+                         
+                      <Checkbox.Group
+                            value={filteredcouncildistricts}
+                            onChange={setfilteredcouncildistrictspre}
+                          >
+                            {" "}
+                            <div
+                              className={`grid grid-cols-3 gap-x-4 `}
+                            >
+                              {optionsCd.map(
+                                (eachEntry) => (
+                                  <Checkbox
+                                    id={eachEntry}
+                                    value={eachEntry}
+                                    label={<span className="text-nowrap text-xs">
+                                    <span className="text-white">
+                                    {eachEntry}
+                                    </span>
+                                  </span>}
+                                    key={eachEntry}
+                                    onChange={setfilteredcouncildistrictspre}
+                                   
+                                  />
+                                )
+                              )}
+                            </div>
+                          </Checkbox.Group>
                       </div>
                     </>
                   )}
@@ -1110,16 +1132,17 @@ window.innerHeight <= 500 && (
     "Not in Data"
   )
 }
-<br/><strong>Type</strong> {houseClickedData.properties["Type"] ? `${houseClickedData.properties["Type"]}` : "None"}
-<br/><strong>Type2</strong> {houseClickedData.properties["Type2"] ? `${houseClickedData.properties["Type2"]}` : "None"}
-<br/><strong>AH Studio Unit #</strong> ${houseClickedData.properties["AH Studio Unit #"] ? `${houseClickedData.properties["AH Studio Unit #"]}` : "None"}
-<br/><strong>AH 1BR Unit #</strong> ${houseClickedData.properties["AH 1BR Unit #"] ? `${houseClickedData.properties["AH 1BR Unit #"]}` : "None"}
-<br/><strong>AH 2BR Unit #</strong> ${houseClickedData.properties["AH 2BR Unit #"] ? `${houseClickedData.properties["AH 2BR Unit #"]}` : "None"}
-<br/><strong>AH 3BR Unit #</strong> ${houseClickedData.properties["AH 3BR Unit #"] ? `${houseClickedData.properties["AH 3BR Unit #"]}` : "None"}
-<br/><strong>AH 4BR Unit #</strong> ${houseClickedData.properties["AH 4BR Unit #"] ? `${houseClickedData.properties["AH 4BR Unit #"]}` : "None"}
-<br/><strong>AH 5BR Unit #</strong> ${houseClickedData.properties["AH 5BR Unit #"] ? `${houseClickedData.properties["AH 5BR Unit #"]}` : "None"}
-<br/><strong>AH 6BR Unit #</strong> ${houseClickedData.properties["AH 6BR Unit #"] ? `${houseClickedData.properties["AH 6BR Unit #"]}` : "None"}
-
+<div>{houseClickedData.properties["Type"] ? <div><strong>Type</strong> {houseClickedData.properties["Type"]}</div>: ""}</div>
+<div>{houseClickedData.properties["Type2"] ? <div><strong>Type2</strong> {houseClickedData.properties["Type2"]}</div>: ""}</div>
+<div>{houseClickedData.properties["AH Studio Unit #"] ? <div><strong>AH Studio Unit #</strong> {houseClickedData.properties["AH Studio Unit #"]}</div>: ""}</div>
+<div>{houseClickedData.properties["AH 1BR Unit #"] ? <div><strong>AH 1BR Unit #</strong>{houseClickedData.properties["AH 1BR Unit #"]}</div> : ""}</div>
+<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
+<div>{houseClickedData.properties["AH 3BR Unit #"] ? <div><strong>AH 3BR Unit #</strong>{houseClickedData.properties["AH 3BR Unit #"]}</div> : ""}</div>
+<div>{houseClickedData.properties["AH 4BR Unit #"] ? <div><strong>AH 4BR Unit #</strong>{houseClickedData.properties["AH 4BR Unit #"]}</div> : ""}</div>
+<div>{houseClickedData.properties["AH 5BR Unit #"] ? <div><strong>AH 5BR Unit #</strong>{houseClickedData.properties["AH 5BR Unit #"]}</div> : ""}</div>
+<div>{houseClickedData.properties["AH 6BR Unit #"] ? <div><strong>AH 6BR Unit #</strong>{houseClickedData.properties["AH 6BR Unit #"]}</div> : ""}</div>
+<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
+<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
 
 
 <br/> 
