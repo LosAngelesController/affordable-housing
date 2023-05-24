@@ -802,15 +802,37 @@ const popup = new mapboxgl.Popup({
     ${e.features[0].properties["Certificate of Occupancy"] ? `<br><b> Certificate of Occupancy</b> ${e.features[0].properties["Certificate of Occupancy"]}` : `<br><b> Certificate of Occupancy</b> Not in Data`}
     <br><strong>Type</strong> ${e.features[0].properties["Type"] ? `${e.features[0].properties["Type"]}` : "None"}
     <br><strong>Type2</strong> ${e.features[0].properties["Type2"] ? `${e.features[0].properties["Type2"]}` : "None"}<br><b>Click for more info.</b>;
-    <br><strong>AH Studio Unit #</strong> ${e.features[0].properties["AH Studio Unit #"] ? `${e.features[0].properties["AH Studio Unit #"]}` : "None"}<br><b>Click for more info.</b>;
-    <br><strong>AH 1BR Unit #</strong> ${e.features[0].properties["AH 1BR Unit #"] ? `${e.features[0].properties["AH 1BR Unit #"]}` : "None"}<br><b>Click for more info.</b>;
-    <br><strong>AH 2BR Unit #</strong> ${e.features[0].properties["AH 2BR Unit #"] ? `${e.features[0].properties["AH 2BR Unit #"]}` : "None"}<br><b>Click for more info.</b>;
-    <br><strong>AH 3BR Unit #</strong> ${e.features[0].properties["AH 3BR Unit #"] ? `${e.features[0].properties["AH 3BR Unit #"]}` : "None"}<br><b>Click for more info.</b>;
-    <br><strong>AH 4BR Unit #</strong> ${e.features[0].properties["AH 4BR Unit #"] ? `${e.features[0].properties["AH 4BR Unit #"]}` : "None"}<br><b>Click for more info.</b>;
-    <br><strong>AH 5BR Unit #</strong> ${e.features[0].properties["AH 5BR Unit #"] ? `${e.features[0].properties["AH 5BR Unit #"]}` : "None"}<br><b>Click for more info.</b>;
-    <br><strong>AH 6BR Unit #</strong> ${e.features[0].properties["AH 6BR Unit #"] ? `${e.features[0].properties["AH 6BR Unit #"]}` : "None"}<br><b>Click for more info.</b>`;
+  
+    <div>
+    ${e.features[0].properties["AH Studio Unit #"] ? 
+      `<div><strong>AH Studio Unit #</strong> ${e.features[0].properties["AH Studio Unit #"]}</div>` : ""}
+  </div>
+  <div>
+    ${e.features[0].properties["AH 1BR Unit #"] ? 
+      `<div><strong>AH 1BR Unit #</strong>${e.features[0].properties["AH 1BR Unit #"]}</div>` : ""}
+  </div>
+  <div>
+    ${e.features[0].properties["AH 2BR Unit #"] ? 
+      `<div><strong>AH 2BR Unit #</strong>${e.features[0].properties["AH 2BR Unit #"]}</div>` : ""}
+  </div>
+  <div>
+    ${e.features[0].properties["AH 3BR Unit #"] ? 
+      `<div><strong>AH 3BR Unit #</strong>${e.features[0].properties["AH 3BR Unit #"]}</div>` : ""}
+  </div>
+  <div>
+    ${e.features[0].properties["AH 4BR Unit #"] ? 
+      `<div><strong>AH 4BR Unit #</strong>${e.features[0].properties["AH 4BR Unit #"]}</div>` : ""}
+  </div>
+  <div>
+    ${e.features[0].properties["AH 5BR Unit #"] ? 
+      `<div><strong>AH 5BR Unit #</strong>${e.features[0].properties["AH 5BR Unit #"]}</div>` : ""}
+  </div>
+  <div>
+    ${e.features[0].properties["AH 6BR Unit #"] ? 
+      `<div><strong>AH 6BR Unit #</strong>${e.features[0].properties["AH 6BR Unit #"]}</div>` : ""}
+  </div>
+  `;
 
-    
   //console.log(e.features)
   
     // Ensure that if the map is zoomed out such that multiple
