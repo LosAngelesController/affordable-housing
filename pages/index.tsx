@@ -17,7 +17,7 @@ const councildistricts = require('./CouncilDistricts.json')
 const citybounds = require('./citybounds.json')
 import * as turf from '@turf/turf'
 
-    // added the following 6 lines.
+    // added the following 6 liness.
     import mapboxgl from 'mapbox-gl';
 
        import { assertDeclareExportAllDeclaration } from '@babel/types';
