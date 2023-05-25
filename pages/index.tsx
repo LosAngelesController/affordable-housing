@@ -17,7 +17,7 @@ const councildistricts = require('./CouncilDistricts.json')
 const citybounds = require('./citybounds.json')
 import * as turf from '@turf/turf'
 
-    // added the following 6 liness.
+    // added the following 6 lines.
     import mapboxgl from 'mapbox-gl';
 
        import { assertDeclareExportAllDeclaration } from '@babel/types';
@@ -66,8 +66,9 @@ const Home: NextPage = () => {
 
    const [selectedfilteropened, setselectedfilteropened] = useState("CD#");
    const [filteredcouncildistricts, setfilteredcouncildistricts] =
-   useState<string[]>(optionsCd.map((option)=>option));
+   useState<string[]>([]);
   //  console.log(filteredcouncildistricts)
+  //  console.log(optionsCd)
   function closeModal() {
     setDisclaimerOpen(false)
   }
@@ -921,7 +922,7 @@ if (getmapboxlogo) {
   getmapboxlogo.remove()
 }
 
-//test
+
 
 var mapname = 'housingv2'
 
@@ -935,6 +936,7 @@ useEffect(()=>{
         (feature) => feature.properties.dist_name
       );
       setOptionsCd(optionsCd);
+      setfilteredcouncildistricts(optionsCd)
 }, [])
   return (
   
@@ -1019,6 +1021,7 @@ useEffect(()=>{
                       <Checkbox.Group
                             value={filteredcouncildistricts}
                             onChange={setfilteredcouncildistrictspre}
+                            
                           >
                             {" "}
                             <div
@@ -1035,6 +1038,7 @@ useEffect(()=>{
                                     </span>
                                   </span>}
                                     key={eachEntry}
+                                   
                                     onChange={setfilteredcouncildistrictspre}
                                    
                                   />
