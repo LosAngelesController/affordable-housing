@@ -921,7 +921,7 @@ if (getmapboxlogo) {
   getmapboxlogo.remove()
 }
 
-
+//test
 
 var mapname = 'housingv2'
 
