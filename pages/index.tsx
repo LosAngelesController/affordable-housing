@@ -76,9 +76,10 @@ const Home: NextPage = () => {
   
 
   const setfilteredcouncildistrictspre = (event: any) => {
+    console.log(event)
     // debugger
-   if(event == ""){
-    setfilteredcouncildistricts(event);
+   if(event == "Select All"){
+    // setfilteredcouncildistricts(event);
     setSelectAll(!selectAll)
    }else if(event == "sndk"){
    
@@ -1011,7 +1012,7 @@ useEffect(()=>{
                             onClick={() => {
                              
                               setfilteredcouncildistricts(optionsCd.map((option)=> option));
-                              setfilteredcouncildistrictspre("");
+                              setfilteredcouncildistrictspre("Select All");
                             }}
                           >
                             Select All
