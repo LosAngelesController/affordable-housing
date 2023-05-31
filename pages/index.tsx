@@ -1084,7 +1084,7 @@ useEffect(()=>{
                               setfilteredcouncildistrictspre("");
                             }}
                           >
-                            UnSelect All
+                            Unselect All
                           </button><br></br>
                         
                          
