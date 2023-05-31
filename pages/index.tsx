@@ -44,7 +44,7 @@ const Home: NextPage = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [optionsCd, setOptionsCd] = useState<any[]>([]);
   const [selectAll, setSelectAll] = useState(false);
-  
+  const [filterRange, setFilterRange] = useState(null);
 
   const councilDistricts = [
    '1 - Gilbert Cedillo' ,
@@ -75,8 +75,16 @@ const Home: NextPage = () => {
 
   
 
+  const handleToggleFilter = range => {
+    if (range === filterRange) {
+      setFilterRange(null); // Reset the filter if the same range is clicked again
+    } else {
+      setFilterRange(range);
+    }
+  };
+
   const setfilteredcouncildistrictspre = (event: any) => {
-    console.log(event)
+    // console.log(event)
     // debugger
    if(event == "Select All"){
     // setfilteredcouncildistricts(event);
@@ -486,6 +494,33 @@ window.addEventListener('resize',  handleResize);
 
 map.on('load', () => {
 
+  const housingLayer = map.getLayer('housinglayer');
+  if (housingLayer) {
+    if (filterRange === 'yellow') {
+      map.setFilter('housinglayer', [
+        'all',
+        ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0],
+        ['<', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+      ]);
+    } else if (filterRange === 'green') {
+      map.setFilter('housinglayer', [
+        'all',
+        ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+        ['<=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 1],
+      ]);
+      map.setPaintProperty('housinglayer', 'circle-color', [
+        'case',
+        ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+        '#41ffca', // Set the color to green for points with percentage above 80%
+        '#ffc021' // Set the default color for other points
+      ])
+    } else {
+      map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
+    }
+  } else {
+    console.log('Layer with id "housinglayer" not found on the map.');
+  }
+
   okaydeletepoints.current = () => {
     try {
       var affordablepoint: any = map.getSource('selected-home-point')
@@ -663,34 +698,44 @@ map.on('load', () => {
     });
 
 map.addLayer({
-  'id': 'housinglayer',
-  'type': 'circle',
-  'source': 'housingvector',
-  'source-layer': 'kennethmejia.af29p9xh',
-  'paint': {
-    'circle-color': [
-      "case",
-      [">", ["to-number", ["get", "Affordable %"]], 0.9],
-      "#41ffca",
-      "#ffc021"
-    ],
-    'circle-radius': getRadius(),
-    'circle-pitch-scale': "viewport",
-    'circle-pitch-alignment': "viewport",
-    'circle-stroke-width': [
-      "interpolate",
-      ["linear"],
-      ["zoom"],
-      5,
-      1.2,
-      8,
-      1.7,
-      17,
-      1.8
-    ],
-    'circle-stroke-color': "#111111"
-  }
-});
+      'id': 'housinglayer',
+      'type': 'circle',
+      'source': 'housingvector',
+      'source-layer': 'kennethmejia.af29p9xh',
+      'paint': {
+        'circle-radius': getRadius(),
+        'circle-pitch-scale': 'viewport',
+        'circle-pitch-alignment': 'viewport',
+        'circle-stroke-width': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          5,
+          1.2,
+          8,
+          1.7,
+          17,
+          1.8
+        ],
+        'circle-stroke-color': '#111111',
+        'circle-color': [
+          'case',
+          [
+            'all',
+            ['!=', ['get', 'Affordable Units'], null],
+            ['!=', ['get', 'Total Units'], null],
+            ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+          ],
+          'green',
+          'default-color'
+        ]
+      },
+      'filter': [
+        'all',
+        ['!=', ['get', 'Affordable Units'], null],
+        ['!=', ['get', 'Total Units'], null]
+      ] // Exclude points with null values for 'Affordable Units' or 'Total Units'
+    });
 
 
       // Create a popup, but don't add it to the map yet.
@@ -796,42 +841,43 @@ const popup = new mapboxgl.Popup({
      
     // Copy coordinates array.
     const coordinates = e.features[0].geometry.coordinates.slice();
-    const description = `<b>Address</b> ${e.features[0].properties["Address"]}<br><b>Zip Code</b> ${e.features[0].properties["Zip Code"]}<br>
-    <b>Council District</b> ${e.features[0].properties["CD#"]}<br>
-    <b>${e.features[0].properties["Affordable Units"]}</b> Affordable Units<br>
-    <b>${e.features[0].properties["Total Units"]}</b> Total Units<br>
-    <b>Covenant Year</strong> ${e.features[0].properties["Year of Covenant"]}
-    ${e.features[0].properties["Certificate of Occupancy"] ? `<br><b> Certificate of Occupancy</b> ${e.features[0].properties["Certificate of Occupancy"]}` : `<br><b> Certificate of Occupancy</b> Not in Data`}
-    <br><strong>Type</strong> ${e.features[0].properties["Type"] ? `${e.features[0].properties["Type"]}` : "None"}
-    <br><strong>Type2</strong> ${e.features[0].properties["Type2"] ? `${e.features[0].properties["Type2"]}` : "None"}<br><b>Click for more info.</b>;
+    const description = `Address ${e.features[0].properties["Address"]}<br>Zip Code ${e.features[0].properties["Zip Code"]}<br>
+    Council District ${e.features[0].properties["CD#"]}<br>
+    ${e.features[0].properties["% of Affordable"]}<br>
+    ${e.features[0].properties["Affordable Units"]} Affordable Units<br>
+    ${e.features[0].properties["Total Units"]} Total Units<br>
+   Covenant Year${e.features[0].properties["Year of Covenant"]}
+    ${e.features[0].properties["Certificate of Occupancy"] ? `<br> Certificate of Occupancy ${e.features[0].properties["Certificate of Occupancy"]}` : `<br>Certificate of Occupancy Not in Data`}
+    <br>Type ${e.features[0].properties["Type"] ? `${e.features[0].properties["Type"]}` : "None"}
+    <br>Type2 ${e.features[0].properties["Type2"] ? `${e.features[0].properties["Type2"]}` : "None"};
   
     <div>
     ${e.features[0].properties["AH Studio Unit #"] ? 
-      `<div><strong>AH Studio Unit #</strong> ${e.features[0].properties["AH Studio Unit #"]}</div>` : ""}
+      `<div>AH Studio Unit # ${e.features[0].properties["AH Studio Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 1BR Unit #"] ? 
-      `<div><strong>AH 1BR Unit #</strong>${e.features[0].properties["AH 1BR Unit #"]}</div>` : ""}
+      `<div>AH 1BR Unit #${e.features[0].properties["AH 1BR Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 2BR Unit #"] ? 
-      `<div><strong>AH 2BR Unit #</strong>${e.features[0].properties["AH 2BR Unit #"]}</div>` : ""}
+      `<div>AH 2BR Unit #${e.features[0].properties["AH 2BR Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 3BR Unit #"] ? 
-      `<div><strong>AH 3BR Unit #</strong>${e.features[0].properties["AH 3BR Unit #"]}</div>` : ""}
+      `<div>AH 3BR Unit #${e.features[0].properties["AH 3BR Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 4BR Unit #"] ? 
-      `<div><strong>AH 4BR Unit #</strong>${e.features[0].properties["AH 4BR Unit #"]}</div>` : ""}
+      `<div>AH 4BR Unit #${e.features[0].properties["AH 4BR Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 5BR Unit #"] ? 
-      `<div><strong>AH 5BR Unit #</strong>${e.features[0].properties["AH 5BR Unit #"]}</div>` : ""}
+      `<div>AH 5BR Unit #${e.features[0].properties["AH 5BR Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 6BR Unit #"] ? 
-      `<div><strong>AH 6BR Unit #</strong>${e.features[0].properties["AH 6BR Unit #"]}</div>` : ""}
+      `<div>AH 6BR Unit #${e.features[0].properties["AH 6BR Unit #"]}</div>` : ""}
   </div>
   `;
 
@@ -931,7 +977,7 @@ var mapname = 'housingv2'
 
          
 
-  }, [selectAll])
+  }, [selectAll,filterRange])
 useEffect(()=>{
     const optionsCd = CouncilDist.features.map(
         (feature) => feature.properties.dist_name
@@ -941,7 +987,7 @@ useEffect(()=>{
 }, [])
   return (
   
-  <div className='flex flex-col h-screen w-screen absolute'>
+<div className='flex flex-col h-screen w-screen absolute'>
       <Head>
       <script src="https://cdn-1bo.pages.dev/newrelicmainsite.js" async></script>
       <link rel="icon" href="https://mejiaforcontroller.com/wp-content/uploads/2020/12/cropped-favicon-1-32x32.png" sizes="32x32"/>
@@ -1003,6 +1049,19 @@ useEffect(()=>{
                   >
                     CD #
                   </button>
+                  <button
+                    onClick={() => {
+                      setselectedfilteropened("ah");
+                    }}
+                    className={`px-2 border-b-2 py-1 font-semibold ${
+                      selectedfilteropened === "ah"
+                        ? "border-[#41ffca] text-[#41ffca]"
+                        : "hover:border-white border-transparent text-gray-50"
+                    }`}
+                  >
+                    AH %
+                  </button>
+        
  
   {selectedfilteropened === "cd" && (
                     <>
@@ -1016,6 +1075,16 @@ useEffect(()=>{
                             }}
                           >
                             Select All
+                          </button>
+                          <button
+                            className="align-middle text-white rounded-lg px-1  border border-gray-400 text-sm md:text-base"
+                            onClick={() => {
+                             
+                        
+                              setfilteredcouncildistrictspre("");
+                            }}
+                          >
+                            UnSelect All
                           </button><br></br>
                         
                          
@@ -1047,6 +1116,43 @@ useEffect(()=>{
                               )}
                             </div>
                           </Checkbox.Group>
+                      </div>
+                    </>
+                  )}
+                  {selectedfilteropened === "ah" && (
+                    <>
+                      <div className="pl-5 pr-2 py-2">
+                      {/* <button
+                            className="align-middle text-white rounded-lg px-1  border border-gray-400 text-sm md:text-base"
+                            onClick={() => handleToggleFilter('yellow')}
+                          >
+                            0-79.99%
+                          </button>
+                          <button
+                            className="align-middle text-white rounded-lg px-1  border border-gray-400 text-sm md:text-base"
+                            onClick={() => handleToggleFilter('green')}
+                          >
+                            80-100%
+                          </button><br></br> */}
+                          <label className="text-white">
+    <input
+      type="checkbox"
+      
+      checked={filterRange === 'yellow'}
+      onChange={() => handleToggleFilter('yellow')}
+    />
+    0-79.99%
+  </label>
+  <br />
+  <label className="text-white">
+    <input
+      type="checkbox"
+      checked={filterRange === 'green'}
+      onChange={() => handleToggleFilter('green')}
+    />
+    80-100%
+  </label>
+                         
                       </div>
                     </>
                   )}
@@ -1225,3 +1331,7 @@ window.innerHeight <= 500 && (
 }
 
 export default Home;
+
+
+
+
