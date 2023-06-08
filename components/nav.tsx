@@ -9,13 +9,13 @@ const navigationPayroll = [
     'name': "Map",
     'url': "/"
   },
-  // {
-  //   'name': "List",
-  //   'url': "",
-  //   'newtab': true
-  // },
   {
-    'name': "Los Angeles Controller",
+    'name': "Table",
+    'url': "https://docs.google.com/spreadsheets/d/1gG_-kU8JxEPEnvjRrvTobYSs_dzRpMZs/edit?usp=sharing&ouid=112354903454043925372&rtpof=true&sd=true",
+    'newtab': true
+  },
+  {
+    'name': "LA Controller",
     'url': "https://controller.lacity.gov",
     'newtab': true
   }

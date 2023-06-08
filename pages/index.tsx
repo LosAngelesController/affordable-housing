@@ -841,15 +841,15 @@ const popup = new mapboxgl.Popup({
      
     // Copy coordinates array.
     const coordinates = e.features[0].geometry.coordinates.slice();
-    const description = `Address ${e.features[0].properties["Address"]}<br>Zip Code ${e.features[0].properties["Zip Code"]}<br>
-    Council District ${e.features[0].properties["CD#"]}<br>
+    const description = `<b>Address</b> ${e.features[0].properties["Address"]}<br><b>Zip Code</b> ${e.features[0].properties["Zip Code"]}<br>
+    <b>Council District</b> ${e.features[0].properties["CD#"]}<br>
     ${e.features[0].properties["% of Affordable"]}<br>
-    ${e.features[0].properties["Affordable Units"]} Affordable Units<br>
-    ${e.features[0].properties["Total Units"]} Total Units<br>
-   Covenant Year${e.features[0].properties["Year of Covenant"]}
-    ${e.features[0].properties["Certificate of Occupancy"] ? `<br> Certificate of Occupancy ${e.features[0].properties["Certificate of Occupancy"]}` : `<br>Certificate of Occupancy Not in Data`}
-    <br>Type ${e.features[0].properties["Type"] ? `${e.features[0].properties["Type"]}` : "None"}
-    <br>Type2 ${e.features[0].properties["Type2"] ? `${e.features[0].properties["Type2"]}` : "None"};
+    ${e.features[0].properties["Affordable Units"]} <b>Affordable Units</b><br>
+    ${e.features[0].properties["Total Units"]} <b>Total Units</b><br>
+    <b>Covenant Year</b> ${e.features[0].properties["Year of Covenant"]}
+    ${e.features[0].properties["Certificate of Occupancy"] ? `<br> <b>Certificate of Occupancy</b> ${e.features[0].properties["Certificate of Occupancy"]}` : `<br><b>Certificate of Occupancy Not in Data</b>`}
+    <br><b>Type</b> ${e.features[0].properties["Type"] ? `${e.features[0].properties["Type"]}` : "None"}
+    <br><b>Type2</b> ${e.features[0].properties["Type2"] ? `${e.features[0].properties["Type2"]}` : "None"}
   
     <div>
     ${e.features[0].properties["AH Studio Unit #"] ? 
@@ -1274,8 +1274,8 @@ window.innerHeight <= 500 && (
 <div>{houseClickedData.properties["AH 4BR Unit #"] ? <div><strong>AH 4BR Unit #</strong>{houseClickedData.properties["AH 4BR Unit #"]}</div> : ""}</div>
 <div>{houseClickedData.properties["AH 5BR Unit #"] ? <div><strong>AH 5BR Unit #</strong>{houseClickedData.properties["AH 5BR Unit #"]}</div> : ""}</div>
 <div>{houseClickedData.properties["AH 6BR Unit #"] ? <div><strong>AH 6BR Unit #</strong>{houseClickedData.properties["AH 6BR Unit #"]}</div> : ""}</div>
-<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
-<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
+{/* <div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
+<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div> */}
 
 
 <br/> 
