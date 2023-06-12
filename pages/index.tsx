@@ -1314,28 +1314,52 @@ const handleToggleFilter = (range: any)=> {
     
    }
   };
-
   const closeHouseClickedPopup = () => {
-    var affordablepoint: any = mapref.current.getSource('selected-home-point')
-        affordablepoint.setData(null);   
-    mapref.current.setLayoutProperty("points-affordable-housing", 'visibility', 'none');
-    sethousingaddyopen(false);
-    if (mapref) {
-      if (mapref.current) {
-        var affordablepoint: any = mapref.current.getSource('selected-home-point')
+    if (mapref && mapref.current) {
+      const affordablepoint = mapref.current.getSource('selected-home-point');
+      if (affordablepoint) {
         affordablepoint.setData(null);
       } else {
-        console.log('no current ref')
+        console.log('selected-home-point source not found');
       }
-    }else {
-      console.log('no ref')
+      mapref.current.setLayoutProperty(
+        'points-affordable-housing',
+        'visibility',
+        'none'
+      );
+    } else {
+      console.log('no mapref or mapref.current');
     }
+  
+    sethousingaddyopen(false);
+  
+    if (okaydeletepoints && okaydeletepoints.current) {
+      okaydeletepoints.current();
+    }
+  };
+  
 
-   if ( okaydeletepoints.current) {
-    okaydeletepoints.current()
-   }
+  // const closeHouseClickedPopup = () => {
+  //   var affordablepoint: any = mapref.current.getSource('selected-home-point')
+  //       affordablepoint.setData(null);   
+  //   mapref.current.setLayoutProperty("points-affordable-housing", 'visibility', 'none');
+  //   sethousingaddyopen(false);
+  //   if (mapref) {
+  //     if (mapref.current) {
+  //       var affordablepoint: any = mapref.current.getSource('selected-home-point')
+  //       affordablepoint.setData(null);
+  //     } else {
+  //       console.log('no current ref')
+  //     }
+  //   }else {
+  //     console.log('no ref')
+  //   }
+
+  //  if ( okaydeletepoints.current) {
+  //   okaydeletepoints.current()
+  //  }
    
-  }
+  // }
 
   const closeHousingPopup = () => {
     setInstructionsOpen(false)
@@ -1680,23 +1704,26 @@ map.on('load', () => {
 
   const housingLayer = map.getLayer('housinglayer');
 if (housingLayer) {
-  if (filterRange === 'yellow') {
+  if (filterRange === 'green') {
+    map.setFilter('housinglayer', [
+      'all',
+      ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+      ['<=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 1],
+      
+    ]);
+  } else if (filterRange === 'yellow') {
     map.setFilter('housinglayer', [
       'all',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0],
       ['<', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
     ]);
-  } else if (filterRange === 'green') {
-    map.setFilter('housinglayer', [
-      'all',
-      ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
-      ['<=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 1],
-    ]);
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
-      '#41ffca', // Set the color to green for points with percentage above 80%
+      '#41ffca' ,// Set the color to green for points with percentage above 80%
       '#ffc021' // Set the default color for other points
+      
+       
     ])
   } else {
     map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
