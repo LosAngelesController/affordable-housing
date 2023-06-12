@@ -1274,13 +1274,21 @@ const Home: NextPage = () => {
    useState<string[]>([]);
 // console.log(houseClickedData);
 
-  const handleToggleFilter = range => {
-    if (range === filterRange) {
-      setFilterRange(null); // Reset the filter if the same range is clicked again
-    } else {
-      setFilterRange(range);
-    }
-  };
+const handleToggleFilter = (range: any)=> {
+  if (range === filterRange) {
+    setFilterRange(null); // Reset the filter if the same range is clicked again
+  } else {
+    setFilterRange(range);
+  }
+};
+
+  // const handleToggleFilter = range => {
+  //   if (range === filterRange) {
+  //     setFilterRange(null); // Reset the filter if the same range is clicked again
+  //   } else {
+  //     setFilterRange(range);
+  //   }
+  // };
 
   const setfilteredcouncildistrictspre = (event: any) => {
     // console.log(event)
