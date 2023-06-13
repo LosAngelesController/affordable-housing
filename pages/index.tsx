@@ -1307,26 +1307,28 @@ const handleToggleFilter = (range: any)=> {
   };
 
   const closeHouseClickedPopup = () => {
-    var affordablepoint: any = mapref.current.getSource('selected-home-point')
-        affordablepoint.setData(null);   
-    mapref.current.setLayoutProperty("points-affordable-housing", 'visibility', 'none');
-    sethousingaddyopen(false);
-    if (mapref) {
-      if (mapref.current) {
-        var affordablepoint: any = mapref.current.getSource('selected-home-point')
+    if (mapref && mapref.current) {
+      const affordablepoint = mapref.current.getSource('selected-home-point');
+      if (affordablepoint) {
         affordablepoint.setData(null);
       } else {
-        console.log('no current ref')
+        console.log('selected-home-point source not found');
       }
-    }else {
-      console.log('no ref')
+      mapref.current.setLayoutProperty(
+        'points-affordable-housing',
+        'visibility',
+        'none'
+      );
+    } else {
+      console.log('no mapref or mapref.current');
     }
-
-   if ( okaydeletepoints.current) {
-    okaydeletepoints.current()
-   }
-   
-  }
+  
+    sethousingaddyopen(false);
+  
+    if (okaydeletepoints && okaydeletepoints.current) {
+      okaydeletepoints.current();
+    }
+  };
 
   const closeHousingPopup = () => {
     setInstructionsOpen(false)
@@ -2029,42 +2031,42 @@ const popup = new mapboxgl.Popup({
     
     // Copy coordinates array.
     const coordinates = e.features[0].geometry.coordinates.slice();
-    const description = `Address ${e.features[0].properties["Address"]}<br>Zip Code ${e.features[0].properties["Zip Code"]}<br>
-    Council District ${e.features[0].properties["CD#"]}<br>
+    const description = `<b>Address</b> ${e.features[0].properties["Address"]}<br><b>Zip Code</b> ${e.features[0].properties["Zip Code"]}<br>
+    <b>Council District</b> ${e.features[0].properties["CD#"]}<br>
     ${e.features[0].properties["Affordable Units"]} Affordable Units<br>
     ${e.features[0].properties["Total Units"]} Total Units<br>
-   Covenant Year${e.features[0].properties["Year of Covenant"]}
-    ${e.features[0].properties["Certificate of Occupancy"] ? `<br> Certificate of Occupancy ${e.features[0].properties["Certificate of Occupancy"]}` : `<br>Certificate of Occupancy Not in Data`}
-    <br>Type ${e.features[0].properties["Type"] ? `${e.features[0].properties["Type"]}` : "None"}
-    <br>Type2 ${e.features[0].properties["Type2"] ? `${e.features[0].properties["Type2"]}` : "None"};
+   <b>Covenant Year</b> ${e.features[0].properties["Year of Covenant"]}
+    ${e.features[0].properties["Certificate of Occupancy"] ? `<br> <b>Certificate of Occupancy</b> ${e.features[0].properties["Certificate of Occupancy"]}` : `<br>Certificate of Occupancy Not in Data`}
+    <br><b>Type</b> ${e.features[0].properties["Type"] ? `${e.features[0].properties["Type"]}` : "None"}
+    <br><b>Type2</b> ${e.features[0].properties["Type2"] ? `${e.features[0].properties["Type2"]}` : "None"};
   
     <div>
     ${e.features[0].properties["AH Studio Unit #"] ? 
-      `<div>AH Studio Unit # ${e.features[0].properties["AH Studio Unit #"]}</div>` : ""}
+      `<div><b>AH Studio Unit # </b>${e.features[0].properties["AH Studio Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 1BR Unit #"] ? 
-      `<div>AH 1BR Unit #${e.features[0].properties["AH 1BR Unit #"]}</div>` : ""}
+      `<div><b>AH 1BR Unit </b>#${e.features[0].properties["AH 1BR Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 2BR Unit #"] ? 
-      `<div>AH 2BR Unit #${e.features[0].properties["AH 2BR Unit #"]}</div>` : ""}
+      `<div><b>AH 2BR Unit </b>#${e.features[0].properties["AH 2BR Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 3BR Unit #"] ? 
-      `<div>AH 3BR Unit #${e.features[0].properties["AH 3BR Unit #"]}</div>` : ""}
+      `<div><b>AH 3BR Unit</b> #${e.features[0].properties["AH 3BR Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 4BR Unit #"] ? 
-      `<div>AH 4BR Unit #${e.features[0].properties["AH 4BR Unit #"]}</div>` : ""}
+      `<div><b>AH 4BR Unit #</b>${e.features[0].properties["AH 4BR Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 5BR Unit #"] ? 
-      `<div>AH 5BR Unit #${e.features[0].properties["AH 5BR Unit #"]}</div>` : ""}
+      `<div><b>AH 5BR Unit #</b>${e.features[0].properties["AH 5BR Unit #"]}</div>` : ""}
   </div>
   <div>
     ${e.features[0].properties["AH 6BR Unit #"] ? 
-      `<div>AH 6BR Unit #${e.features[0].properties["AH 6BR Unit #"]}</div>` : ""}
+      `<div><b>AH 6BR Unit #</b>${e.features[0].properties["AH 6BR Unit #"]}</div>` : ""}
   </div>
   `;
 
