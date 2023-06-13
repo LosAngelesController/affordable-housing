@@ -1281,15 +1281,6 @@ const handleToggleFilter = (range: any)=> {
     setFilterRange(range);
   }
 };
-
-  // const handleToggleFilter = range => {
-  //   if (range === filterRange) {
-  //     setFilterRange(null); // Reset the filter if the same range is clicked again
-  //   } else {
-  //     setFilterRange(range);
-  //   }
-  // };
-
   const setfilteredcouncildistrictspre = (event: any) => {
     // console.log(event)
     // debugger
@@ -1314,52 +1305,28 @@ const handleToggleFilter = (range: any)=> {
     
    }
   };
+
   const closeHouseClickedPopup = () => {
-    if (mapref && mapref.current) {
-      const affordablepoint = mapref.current.getSource('selected-home-point');
-      if (affordablepoint) {
+    var affordablepoint: any = mapref.current.getSource('selected-home-point')
+        affordablepoint.setData(null);   
+    mapref.current.setLayoutProperty("points-affordable-housing", 'visibility', 'none');
+    sethousingaddyopen(false);
+    if (mapref) {
+      if (mapref.current) {
+        var affordablepoint: any = mapref.current.getSource('selected-home-point')
         affordablepoint.setData(null);
       } else {
-        console.log('selected-home-point source not found');
+        console.log('no current ref')
       }
-      mapref.current.setLayoutProperty(
-        'points-affordable-housing',
-        'visibility',
-        'none'
-      );
-    } else {
-      console.log('no mapref or mapref.current');
+    }else {
+      console.log('no ref')
     }
-  
-    sethousingaddyopen(false);
-  
-    if (okaydeletepoints && okaydeletepoints.current) {
-      okaydeletepoints.current();
-    }
-  };
-  
 
-  // const closeHouseClickedPopup = () => {
-  //   var affordablepoint: any = mapref.current.getSource('selected-home-point')
-  //       affordablepoint.setData(null);   
-  //   mapref.current.setLayoutProperty("points-affordable-housing", 'visibility', 'none');
-  //   sethousingaddyopen(false);
-  //   if (mapref) {
-  //     if (mapref.current) {
-  //       var affordablepoint: any = mapref.current.getSource('selected-home-point')
-  //       affordablepoint.setData(null);
-  //     } else {
-  //       console.log('no current ref')
-  //     }
-  //   }else {
-  //     console.log('no ref')
-  //   }
-
-  //  if ( okaydeletepoints.current) {
-  //   okaydeletepoints.current()
-  //  }
+   if ( okaydeletepoints.current) {
+    okaydeletepoints.current()
+   }
    
-  // }
+  }
 
   const closeHousingPopup = () => {
     setInstructionsOpen(false)
@@ -1704,29 +1671,37 @@ map.on('load', () => {
 
   const housingLayer = map.getLayer('housinglayer');
 if (housingLayer) {
-  if (filterRange === 'green') {
-    map.setFilter('housinglayer', [
-      'all',
-      ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
-      ['<=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 1],
-      
-    ]);
-  } else if (filterRange === 'yellow') {
+  if (filterRange === 'yellow') {
     map.setFilter('housinglayer', [
       'all',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0],
       ['<', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
     ]);
+  } else if (filterRange === 'green') {
+    map.setFilter('housinglayer', [
+      'all',
+      ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+      ['<=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 1],
+    ]);
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
-      '#41ffca' ,// Set the color to green for points with percentage above 80%
+      '#41ffca', // Set the color to green for points with percentage above 80%
       '#ffc021' // Set the default color for other points
-      
-       
     ])
   } else {
-    map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
+    map.setFilter('housinglayer', [
+      'all',
+        ['!=', ['get', 'Affordable Units'], ''],
+        ['!=', ['get', 'Total Units'], '']
+    ]);
+    map.setPaintProperty('housinglayer', 'circle-color', [
+      'case',
+      ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+      '#41ffca', // Set the color to green for points with percentage above 80%
+      '#ffc021' // Set the default color for other points
+    ])
+    // map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
   }
 } else {
   console.log('Layer with id "housinglayer" not found on the map.');
@@ -1940,8 +1915,8 @@ if (housingLayer) {
         ['!=', ['get', 'Total Units'], null]
       ] // Exclude points with null values for 'Affordable Units' or 'Total Units'
     });
-    
-    // map.addLayer({
+    // map.setLayoutProperty('housinglayer','circle-sort-key',["*", 1,    ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8]])
+    // // map.addLayer({
     //   'id': 'housinglayer',
     //   'type': 'circle',
     //   'source': 'housingvector',
@@ -2287,7 +2262,7 @@ useEffect(()=>{
                               setfilteredcouncildistrictspre("");
                             }}
                           >
-                            Unselect All
+                            UnSelect All
                           </button>
                           <button className="align-middle text-white rounded-lg px-1  border border-gray-400 text-sm md:text-base"
                             
@@ -2487,8 +2462,8 @@ window.innerHeight <= 500 && (
 <div>{houseClickedData.properties["AH 4BR Unit #"] ? <div><strong>AH 4BR Unit #</strong>{houseClickedData.properties["AH 4BR Unit #"]}</div> : ""}</div>
 <div>{houseClickedData.properties["AH 5BR Unit #"] ? <div><strong>AH 5BR Unit #</strong>{houseClickedData.properties["AH 5BR Unit #"]}</div> : ""}</div>
 <div>{houseClickedData.properties["AH 6BR Unit #"] ? <div><strong>AH 6BR Unit #</strong>{houseClickedData.properties["AH 6BR Unit #"]}</div> : ""}</div>
-{/* <div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
-<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div> */}
+<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
+<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
 
 
 <br/> 
