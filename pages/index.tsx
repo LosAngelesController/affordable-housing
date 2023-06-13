@@ -2033,12 +2033,13 @@ const popup = new mapboxgl.Popup({
     const coordinates = e.features[0].geometry.coordinates.slice();
     const description = `<b>Address</b> ${e.features[0].properties["Address"]}<br><b>Zip Code</b> ${e.features[0].properties["Zip Code"]}<br>
     <b>Council District</b> ${e.features[0].properties["CD#"]}<br>
-    ${e.features[0].properties["Affordable Units"]} Affordable Units<br>
-    ${e.features[0].properties["Total Units"]} Total Units<br>
+    <b>${e.features[0].properties["Affordable Units"]} Affordable Units</b><br>
+    <b>${e.features[0].properties["Total Units"]} Total Units</b><br>
+    
    <b>Covenant Year</b> ${e.features[0].properties["Year of Covenant"]}
     ${e.features[0].properties["Certificate of Occupancy"] ? `<br> <b>Certificate of Occupancy</b> ${e.features[0].properties["Certificate of Occupancy"]}` : `<br>Certificate of Occupancy Not in Data`}
     <br><b>Type</b> ${e.features[0].properties["Type"] ? `${e.features[0].properties["Type"]}` : "None"}
-    <br><b>Type2</b> ${e.features[0].properties["Type2"] ? `${e.features[0].properties["Type2"]}` : "None"};
+    <br><b>Type2</b> ${e.features[0].properties["Type2"] ? `${e.features[0].properties["Type2"]}` : "None"}
   
     <div>
     ${e.features[0].properties["AH Studio Unit #"] ? 
