@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app';
 import styles from '../styles/Home.module.css'
 import './../node_modules/mapbox-gl/dist/mapbox-gl.css'
 import './App.css';
-import { Analytics } from '@vercel/analytics/react';
+// import { Analytics } from '@vercel/analytics/react';
 import './../node_modules/@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import './mapboxdark.css';
 
@@ -39,7 +39,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(()=> {
     TagManager.initialize(tagManagerArgs)
   })
-  return <><Component {...pageProps} /><Analytics /></>
+  return <Component {...pageProps} />
+  
 }
 
 export default MyApp
