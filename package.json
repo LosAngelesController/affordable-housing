@@ -16,7 +16,7 @@
     "@headlessui/react": "^0.0.0-insiders.63383c4",
     "@heroicons/react": "^1.0.6",
     "@mantine/core": "^6.0.11",
-    "@mapbox/mapbox-gl-geocoder": "^5.0.0",
+    "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "@mapbox/mapbox-gl-language": "^1.0.0",
     "@types/turf": "^3.5.32",
     "mapbox": "^1.0.0-beta10",
