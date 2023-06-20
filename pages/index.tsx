@@ -989,15 +989,15 @@ useEffect(()=>{
 <meta name="twitter:card" content="summary_large_image"/>
     <meta name="twitter:title" key='twittertitle' content="Affordable Housing Covenants - 1985 to 2022 | Map"></meta>
 <meta name="twitter:description"  key='twitterdesc' content="Browse and Search Affordable Housing in Los Angeles  with instructions to apply."></meta>
-      <meta name="twitter:image" key='twitterimg' content="https://data.mejiaforcontroller.com/affordablehousingpic.png"></meta>
-      <meta name="twitter:image:alt" content="Where is LA's Affordable Housing? | Kenneth Mejia for LA City Controller" />
+      <meta name="twitter:image" key='twitterimg' content="https://firebasestorage.googleapis.com/v0/b/lacontroller-2b7de.appspot.com/o/affordable-housing.png?alt=media&token=00fdaf96-e113-420c-8775-391a1918d618"></meta>
+      <meta name="twitter:image:alt" content="Affordable Housing Covenants in LA | Kenneth Mejia for LA City Controller" />
       <meta name="description" content="A Map of Affordable Housing in Los Angeles. Find Housing near you. Instructions to apply." />
 
-      <meta property="og:url"                content="https://affordablehousing.mejiaforcontroller.com/" />
+      <meta property="og:url"                content="https://housingcovenants.lacontroller.io/" />
 <meta property="og:type"               content="website" />
 <meta property="og:title"              content="Affordable Housing Covenants - 1985 to 2022 | Map" />
 <meta property="og:description"        content="Browse and Search Affordable Housing in Los Angeles with instructions to apply." />
-<meta property="og:image"              content="https://data.mejiaforcontroller.com/affordablehousingpic.png" />
+<meta property="og:image"              content="https://firebasestorage.googleapis.com/v0/b/lacontroller-2b7de.appspot.com/o/affordable-housing.png?alt=media&token=00fdaf96-e113-420c-8775-391a1918d618" />
 
 
       </Head>
