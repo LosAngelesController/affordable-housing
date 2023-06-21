@@ -24,6 +24,9 @@ import * as turf from '@turf/turf'
 
 import {DisclaimerPopup} from '../components/Disclaimer'
 import { Checkbox } from '@mantine/core'
+import { feature } from 'turf'
+
+ 
 
 function isTouchScreen() {
   return window.matchMedia('(hover: none)').matches;
@@ -48,17 +51,22 @@ const Home: NextPage = () => {
    const [ah, setAh] = useState<string[]>(["yellow", "green"]);
 // console.log(houseClickedData);
 
-const handleToggleFilter = (event: any) => {
-  const value = event;
-  setAh(value)
-  setFilterRange(value);
-  // if (range === filterRange) {
-  //   setFilterRange(null); // Reset the filter if the same range is clicked again
-  // } else {
-  //   setFilterRange(range);
-  // }
-};
+ 
+ 
 
+ const handleToggleFilter = (event: any) => {
+    const value = event;
+    setAh(value)
+    setFilterRange(value);
+    // if (range === filterRange) {
+    //   setFilterRange(null); // Reset the filter if the same range is clicked again
+    // } else {
+    //   setFilterRange(range);
+    // }
+  };
+ 
+
+  
   const setfilteredcouncildistrictspre = (event: any) => {
     // console.log(event)
     // debugger
@@ -79,11 +87,25 @@ const handleToggleFilter = (event: any) => {
     const coordinates = optionsC.map((option)=> option.geometry);
     const filters = coordinates.map((coordinate) => ["within", coordinate]);
 
-    mapref.current.setFilter('housinglayer', [
-      'all',
-      ['any', ...filters], // Include your custom filters here
-      ['!=', ['get', 'Affordable Units'], ''],
-    ]);
+    mapref.current.setFilter("housinglayer", ["any", ...filters]);
+
+   
+ 
+
+    // Change the circle color based on the percentage
+    // if (value >= 50) {
+    //   mapref.setPaintProperty('housinglayer', 'circle-color', [
+    //     'case',
+    //     ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0],
+    //     '#41ffca', // Set the color to green for points with percentage above 80%
+    //     '#ffc021' // Set the default color for other points
+    //   ])
+    //  // mapref.current.setPaintProperty("housinglayer", "circle-color", "#41ffca");
+    // // } else {
+    // //   mapref.current.setPaintProperty("housinglayer", "circle-color", "#ffc021");
+    // // }
+
+    
     
    }
   };
@@ -472,7 +494,9 @@ if (housingLayer) {
     map.setFilter('housinglayer', [
       'all',
         ['!=', ['get', 'Affordable Units'], ''],
-        ['!=', ['get', 'Total Units'], '']
+        ['!=', ['get', 'Total Units'], ''],
+        
+       
     ]);
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
@@ -485,6 +509,7 @@ if (housingLayer) {
       'all',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
       ['<=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 1],
+      
     ]);
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
@@ -509,15 +534,21 @@ if (housingLayer) {
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+      
       '#41ffca', // Set the color to green for points with percentage above 80%
       '#ffc021' // Set the default color for other points
     ])
+    
+
+    
+
+    
     // map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
   }
 } else {
   console.log('Layer with id "housinglayer" not found on the map.');
 }
-//
+
 
   okaydeletepoints.current = () => {
     try {
@@ -620,7 +651,7 @@ if (housingLayer) {
         darkspin.setAttribute('style', 'fill: #94a3b8');
        }
         }
-       
+    
       } catch (err) {
         console.error(err)
       }
@@ -707,7 +738,7 @@ if (housingLayer) {
           17,
           1.8
         ],
-        'circle-stroke-color': '#111111',
+        'circle-stroke-color': '#111111', 
         'circle-color': [
           'case',
           [
@@ -715,17 +746,17 @@ if (housingLayer) {
             ['!=', ['get', 'Affordable Units'], null],
             ['!=', ['get', 'Total Units'], null],
             ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+            
           ],
           'green',
-          'default-color'
-        ]
+          'default-color' //default-color
+        ],
+        
       },
-      'filter': [
-        'all',
-        ['!=', ['get', 'Affordable Units'], null],
-        ['!=', ['get', 'Total Units'], null]
-      ] // Exclude points with null values for 'Affordable Units' or 'Total Units'
+     
     });
+
+    
     // map.setLayoutProperty('housinglayer','circle-sort-key',["*", 1,    ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8]])
     // // map.addLayer({
     //   'id': 'housinglayer',
@@ -879,7 +910,6 @@ const popup = new mapboxgl.Popup({
       `<div><b>AH 6BR Unit #</b>${e.features[0].properties["AH 6BR Unit #"]}</div>` : ""}
   </div>
   `;
-
   //console.log(e.features)
   
     // Ensure that if the map is zoomed out such that multiple
@@ -991,19 +1021,19 @@ useEffect(()=>{
 <title>Affordable Housing Covenants - 1985 to 2022 | Map</title>
       <meta property="og:type" content="website"/>
       <meta name="twitter:site" content="@lacontroller" />
-        <meta name="twitter:creator" content="@lacontroller" />
-<meta name="twitter:card" content="summary_large_image"/>
-    <meta name="twitter:title" key='twittertitle' content="Affordable Housing Covenants - 1985 to 2022 | Map"></meta>
-<meta name="twitter:description"  key='twitterdesc' content="Browse and Search Affordable Housing in Los Angeles  with instructions to apply."></meta>
-      <meta name="twitter:image" key='twitterimg' content="https://data.mejiaforcontroller.com/affordablehousingpic.png"></meta>
-      <meta name="twitter:image:alt" content="Where is LA's Affordable Housing? | Kenneth Mejia for LA City Controller" />
-      <meta name="description" content="A Map of Affordable Housing in Los Angeles. Find Housing near you. Instructions to apply." />
+      <meta name="twitter:creator" content="@lacontroller" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" key="twittertitle" content="Affordable Housing Covenants - 1985 to 2022 | Map" />
+<meta name="twitter:description" key="twitterdesc" content="Browse and Search Affordable Housing in Los Angeles with instructions to apply." />
+<meta name="twitter:image" key="twitterimg" content="https://firebasestorage.googleapis.com/v0/b/lacontroller-2b7de.appspot.com/o/affordable-housing.png?alt=media&token=00fdaf96-e113-420c-8775-391a1918d618" />
+<meta name="twitter:image:alt" content="Affordable Housing Covenants in LA | Kenneth Mejia for LA City Controller" />
+<meta name="description" content="A Map of Affordable Housing in Los Angeles. Find Housing near you. Instructions to apply." />
 
-      <meta property="og:url"                content="https://affordablehousing.mejiaforcontroller.com/" />
-<meta property="og:type"               content="website" />
-<meta property="og:title"              content="Affordable Housing Covenants - 1985 to 2022 | Map" />
-<meta property="og:description"        content="Browse and Search Affordable Housing in Los Angeles with instructions to apply." />
-<meta property="og:image"              content="https://data.mejiaforcontroller.com/affordablehousingpic.png" />
+<meta property="og:url" content="https://housingcovenants.lacontroller.io/" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Affordable Housing Covenants - 1985 to 2022 | Map" />
+<meta property="og:description" content="Browse and Search Affordable Housing in Los Angeles with instructions to apply." />
+<meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/lacontroller-2b7de.appspot.com/o/affordable-housing.png?alt=media&token=00fdaf96-e113-420c-8775-391a1918d618" />
 
 
       </Head>
@@ -1186,6 +1216,11 @@ useEffect(()=>{
         onClose={closeHousingPopup}
         />
 <p className='text-sm'>
+<p className="green-text">Green:Most AH</p>
+    <p className="yellow-text">Yellow:Partial AH</p>
+    <p className="black-text">Black:N/A</p>
+<br></br>
+
 1) Use Google to search the address of the location<br/>
 2) See if it&apos;s built<br/>
 3) Get contact information<br/>
@@ -1282,9 +1317,7 @@ window.innerHeight <= 500 && (
 <div>{houseClickedData.properties["AH 4BR Unit #"] ? <div><strong>AH 4BR Unit #</strong>{houseClickedData.properties["AH 4BR Unit #"]}</div> : ""}</div>
 <div>{houseClickedData.properties["AH 5BR Unit #"] ? <div><strong>AH 5BR Unit #</strong>{houseClickedData.properties["AH 5BR Unit #"]}</div> : ""}</div>
 <div>{houseClickedData.properties["AH 6BR Unit #"] ? <div><strong>AH 6BR Unit #</strong>{houseClickedData.properties["AH 6BR Unit #"]}</div> : ""}</div>
-<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
-<div>{houseClickedData.properties["AH 2BR Unit #"] ? <div><strong>AH 2BR Unit #</strong>{houseClickedData.properties["AH 2BR Unit #"]}</div> : ""}</div>
-
+ 
 
 <br/> 
 
