@@ -517,7 +517,7 @@ if (housingLayer) {
 } else {
   console.log('Layer with id "housinglayer" not found on the map.');
 }
-
+//
 
   okaydeletepoints.current = () => {
     try {
