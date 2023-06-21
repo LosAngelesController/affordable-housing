@@ -87,23 +87,17 @@ const Home: NextPage = () => {
     const coordinates = optionsC.map((option)=> option.geometry);
     const filters = coordinates.map((coordinate) => ["within", coordinate]);
 
-    mapref.current.setFilter("housinglayer", ["any", ...filters]);
+     mapref.current.setFilter("housinglayer", ["any", ...filters]);
 
-   
- 
+     // Hides the black dots. 
+    // mapref.current.setFilter('housinglayer', [
+    //   'all',
+    //   'case',
+    //   ['any', ...filters], // Include your custom filters here
+    
+    // ]);
 
-    // Change the circle color based on the percentage
-    // if (value >= 50) {
-    //   mapref.setPaintProperty('housinglayer', 'circle-color', [
-    //     'case',
-    //     ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0],
-    //     '#41ffca', // Set the color to green for points with percentage above 80%
-    //     '#ffc021' // Set the default color for other points
-    //   ])
-    //  // mapref.current.setPaintProperty("housinglayer", "circle-color", "#41ffca");
-    // // } else {
-    // //   mapref.current.setPaintProperty("housinglayer", "circle-color", "#ffc021");
-    // // }
+    
 
     
     
@@ -476,19 +470,24 @@ map.on('load', () => {
   // }
 
   const housingLayer = map.getLayer('housinglayer');
+  
 if (housingLayer) {
   console.log(filterRange)
-  if (filterRange[0] === 'yellow' && filterRange[1] === 'green') {
+  if (filterRange[0] === 'yellow' && filterRange[1] === 'green'){
     map.setFilter('housinglayer', [
       'all',
         ['!=', ['get', 'Affordable Units'], ''],
-        ['!=', ['get', 'Total Units'], '']
+        ['!=', ['get', 'Total Units'], ''],
+        'default-color'
     ]);
+  
+
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
       '#41ffca', // Set the color to green for points with percentage above 80%
       '#ffc021' // Set the default color for other points
+      
     ])
   } else if(filterRange[0] === 'green' && filterRange[1] === 'yellow') {
     map.setFilter('housinglayer', [
@@ -526,24 +525,28 @@ if (housingLayer) {
     ]);
     // map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
   }else {
-    map.setFilter('housinglayer', [
-      'all',
-        ['!=', ['get', 'Affordable Units'], ''],
-        ['!=', ['get', 'Total Units'], '']
-    ]);
+    // map.setFilter('housinglayer', [
+    //   'all',
+    //     ['!=', ['get', 'Affordable Units'], ''],
+    //     ['!=', ['get', 'Total Units'], '']
+    // ]);
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
       
       '#41ffca', // Set the color to green for points with percentage above 80%
-      '#ffc021' // Set the default color for other points
+      '#ffc021', // Set the default color for other points
+ 
     ])
+
     
+    
+ 
 
     
 
     
-    // map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
+//     // map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
   }
 } else {
   console.log('Layer with id "housinglayer" not found on the map.');
@@ -746,11 +749,14 @@ if (housingLayer) {
             ['!=', ['get', 'Affordable Units'], null],
             ['!=', ['get', 'Total Units'], null],
             ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+           
             
           ],
           'green',
           'default-color' //default-color
         ],
+        
+        
         
       },
      
@@ -1216,9 +1222,9 @@ useEffect(()=>{
         onClose={closeHousingPopup}
         />
 <p className='text-sm'>
-<p className="green-text">Green:Most AH</p>
-    <p className="yellow-text">Yellow:Partial AH</p>
-    <p className="black-text">Black:N/A</p>
+<p className="green-text">Green: More AH</p>
+    <p className="yellow-text">Yellow: Partial AH</p>
+    <p className="black-text">Black: N/A</p>
 <br></br>
 
 1) Use Google to search the address of the location<br/>
