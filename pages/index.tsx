@@ -525,11 +525,11 @@ if (housingLayer) {
     ]);
     // map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
   }else {
-    // map.setFilter('housinglayer', [
-    //   'all',
-    //     ['!=', ['get', 'Affordable Units'], ''],
-    //     ['!=', ['get', 'Total Units'], '']
-    // ]);
+    map.setFilter('housinglayer', [
+      'case',
+        ['!=', ['get', 'Affordable Units'], ''],
+        ['!=', ['get', 'Total Units'], '']
+    ]);
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
@@ -1024,7 +1024,7 @@ useEffect(()=>{
 
      <meta charSet="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-<title>Affordable Housing Covenants - 1985 to 2022 | Map</title>
+<title>Affordable Housing (AH) Covenants - 1985 to 2022 | Map</title>
       <meta property="og:type" content="website"/>
       <meta name="twitter:site" content="@lacontroller" />
       <meta name="twitter:creator" content="@lacontroller" />
@@ -1056,7 +1056,7 @@ useEffect(()=>{
 <div
       className='absolute mt-[3.8em] md:[3.8em] md:ml-3 top-0 left-1 max-h-screen flex-col flex z-5'
     >
-  <div className='titleBox  text-sm bold md:text-base break-words bg-gray-100'>Affordable Housing Covenants - 1985 to 2022</div>
+  <div className='titleBox  text-sm bold md:text-base break-words bg-gray-100'>Affordable Housing (AH) Covenants - 1985 to 2022</div>
 
   <div
     className={`geocoder mt-0 left-0  md:hidden xs:text-sm sm:text-base md:text-lg`} id='geocoder'></div>
@@ -1224,7 +1224,7 @@ useEffect(()=>{
 <p className='text-sm'>
 <p className="green-text">Green: More AH</p>
     <p className="yellow-text">Yellow: Partial AH</p>
-    <p className="black-text">Black: N/A</p>
+    <p className="black-text">Black: AH Data Unavailable </p>
 <br></br>
 
 1) Use Google to search the address of the location<br/>
