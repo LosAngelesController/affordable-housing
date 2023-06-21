@@ -61,27 +61,51 @@ const Home: NextPage = () => {
   const setfilteredcouncildistrictspre = (event: any) => {
     // console.log(event)
     // debugger
-   if(event == "Select All"){
-    // setfilteredcouncildistricts(event);
-    setSelectAll(!selectAll)
-   }else if(event == "sndk"){
+    if (event == "Select All") {
+      // setfilteredcouncildistricts(event);
+      setSelectAll(!selectAll);
+    } else if (event == "sndk") {
+      mapref.current.setLayoutProperty("AffordableHousingCovenants-8zpehi", 'visibility', 'none');
+      mapref.current.setLayoutProperty("housing-layer", 'visibility', 'none');
+    } else {
+      const value = event;
+      setfilteredcouncildistricts(value);
+      const optionsC = CouncilDist.features.filter(
+        (feature) => value.includes(feature.properties.dist_name)
+      );
+      const coordinates = optionsC.map((option) => option.geometry);
+      const filters = coordinates.map((coordinate) => ["within", coordinate]);
+  
+      mapref.current.setFilter("housinglayer", ["any", ...filters]);
+      
+      // Change dot color to yellow
+      mapref.current.setPaintProperty("housinglayer", "circle-color", "yellow");
+    }
+  };
+  // const setfilteredcouncildistrictspre = (event: any) => {
+  //   // console.log(event)
+  //   // debugger
+  //  if(event == "Select All"){
+  //   // setfilteredcouncildistricts(event);
+  //   setSelectAll(!selectAll)
+  //  }else if(event == "sndk"){
    
     
-  mapref.current.setLayoutProperty("AffordableHousingCovenants-8zpehi", 'visibility', 'none');
-  mapref.current.setLayoutProperty("housing-layer", 'visibility', 'none');
-   }else{
-    const value = event;
-    setfilteredcouncildistricts(value);
-    const optionsC = CouncilDist.features.filter(
-      (feature) => value.includes(feature.properties.dist_name)
-    );
-    const coordinates = optionsC.map((option)=> option.geometry);
-    const filters = coordinates.map((coordinate) => ["within", coordinate]);
+  // mapref.current.setLayoutProperty("AffordableHousingCovenants-8zpehi", 'visibility', 'none');
+  // mapref.current.setLayoutProperty("housing-layer", 'visibility', 'none');
+  //  }else{
+  //   const value = event;
+  //   setfilteredcouncildistricts(value);
+  //   const optionsC = CouncilDist.features.filter(
+  //     (feature) => value.includes(feature.properties.dist_name)
+  //   );
+  //   const coordinates = optionsC.map((option)=> option.geometry);
+  //   const filters = coordinates.map((coordinate) => ["within", coordinate]);
 
-    mapref.current.setFilter("housinglayer", ["any", ...filters]);
+  //   mapref.current.setFilter("housinglayer", ["any", ...filters]);
     
-   }
-  };
+  //  }
+  // };
 
   const closeHouseClickedPopup = () => {
     if (mapref && mapref.current) {
@@ -467,7 +491,9 @@ if (housingLayer) {
     map.setFilter('housinglayer', [
       'all',
         ['!=', ['get', 'Affordable Units'], ''],
-        ['!=', ['get', 'Total Units'], '']
+        ['!=', ['get', 'Total Units'], ''],
+        
+       
     ]);
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
@@ -480,6 +506,7 @@ if (housingLayer) {
       'all',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
       ['<=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 1],
+      
     ]);
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
@@ -504,9 +531,15 @@ if (housingLayer) {
     map.setPaintProperty('housinglayer', 'circle-color', [
       'case',
       ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+      
       '#41ffca', // Set the color to green for points with percentage above 80%
       '#ffc021' // Set the default color for other points
     ])
+    
+
+    
+
+    
     // map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
   }
 } else {
@@ -615,7 +648,7 @@ if (housingLayer) {
         darkspin.setAttribute('style', 'fill: #94a3b8');
        }
         }
-       
+    
       } catch (err) {
         console.error(err)
       }
@@ -702,7 +735,7 @@ if (housingLayer) {
           17,
           1.8
         ],
-        'circle-stroke-color': '#111111',
+        'circle-stroke-color': '#111111', 
         'circle-color': [
           'case',
           [
@@ -710,16 +743,14 @@ if (housingLayer) {
             ['!=', ['get', 'Affordable Units'], null],
             ['!=', ['get', 'Total Units'], null],
             ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+            
           ],
           'green',
           'default-color'
-        ]
+        ],
+        
       },
-      'filter': [
-        'all',
-        ['!=', ['get', 'Affordable Units'], null],
-        ['!=', ['get', 'Total Units'], null]
-      ] // Exclude points with null values for 'Affordable Units' or 'Total Units'
+     
     });
     // map.setLayoutProperty('housinglayer','circle-sort-key',["*", 1,    ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8]])
     // // map.addLayer({
