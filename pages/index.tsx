@@ -104,6 +104,8 @@ const Home: NextPage = () => {
    }
   };
 
+  
+
   const closeHouseClickedPopup = () => {
     if (mapref && mapref.current) {
       const affordablepoint = mapref.current.getSource('selected-home-point');
