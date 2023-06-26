@@ -58,11 +58,64 @@ const Home: NextPage = () => {
     const value = event;
     setAh(value)
     setFilterRange(value);
-    // if (range === filterRange) {
-    //   setFilterRange(null); // Reset the filter if the same range is clicked again
-    // } else {
-    //   setFilterRange(range);
-    // }
+    const optionsC = CouncilDist.features.filter(
+      (feature) => filteredcouncildistricts.includes(feature.properties.dist_name)
+    );
+    const coordinates = optionsC.map((option)=> option.geometry);
+    const filters = coordinates.map((coordinate) => ["within", coordinate]);
+    if (value[0] === 'yellow' && value[1] === 'green') {
+      mapref.current.setFilter('housinglayer', [
+        'all',
+        ['any', ...filters], // Include your custom filters here
+        ['!=', ['get', 'Affordable Units'], ''],
+      ]);
+      mapref.current.setPaintProperty('housinglayer', 'circle-color', [
+        'case',
+        ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+        '#41ffca', // Set the color to green for points with percentage above 80%
+        '#ffc021' // Set the default color for other points
+      ])
+    } else if(value[0] === 'green' && value[1] === 'yellow') {
+      mapref.current.setFilter('housinglayer', [
+        'all',
+        ['any', ...filters], // Include your custom filters here
+        ['!=', ['get', 'Affordable Units'], ''],
+      ]);
+      mapref.current.setPaintProperty('housinglayer', 'circle-color', [
+        'case',
+        ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+        '#41ffca', // Set the color to green for points with percentage above 80%
+        '#ffc021' // Set the default color for other points
+      ])
+    } else if (value[0] === 'green') {
+      mapref.current.setFilter('housinglayer', [
+        'all',
+        ['any', ...filters],
+        ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+        ['<=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 1],
+      ]);
+      mapref.current.setPaintProperty('housinglayer', 'circle-color', [
+        'case',
+        ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+        '#41ffca', // Set the color to green for points with percentage above 80%
+        '#ffc021' // Set the default color for other points
+      ])
+    } else if(value[0] === 'yellow') {
+      
+      mapref.current.setFilter('housinglayer', [
+        'all',
+        ['any', ...filters],
+        ['>=', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0],
+        ['<', ['/', ['get', 'Affordable Units'], ['get', 'Total Units']], 0.8],
+      ]);
+      // map.setFilter('housinglayer', ['has', 'Affordable Units', 'Total Units']);
+    }else {
+      mapref.current.setFilter('housinglayer', [
+        'all',
+        ['any', ...filters], // Include your custom filters here
+        ['!=', ['get', 'Affordable Units'], ''],
+      ]);
+    }
   };
  
 
@@ -1005,7 +1058,7 @@ if (getmapboxlogo) {
 }
 
 var mapname = 'housingv2'
-  }, [selectAll, filterRange])
+  }, [selectAll])
 useEffect(()=>{
     const optionsCd = CouncilDist.features.map(
         (feature) => feature.properties.dist_name
