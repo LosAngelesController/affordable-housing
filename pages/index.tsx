@@ -1079,7 +1079,7 @@ const Home: NextPage = () => {
 
         <meta
           property="og:url"
-          content="https://housingcovenants.lacontroller.io/"
+          content="https://housingcovenants.lacontroller.app/"
         />
         <meta property="og:type" content="website" />
         <meta
