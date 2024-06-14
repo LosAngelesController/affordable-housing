@@ -47,6 +47,24 @@ const Home: NextPage = () => {
     string[]
   >([]);
   const [ah, setAh] = useState<string[]>(["yellow", "green"]);
+  const [mapboxConfig, setMapboxConfig] = useState<{
+    mapboxToken: string;
+    mapboxStyle: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchMapboxConfig = async () => {
+      try {
+        const response = await fetch("/api/mapboxConfig");
+        const data = await response.json();
+        setMapboxConfig(data);
+      } catch (error) {
+        console.error("Error fetching Mapbox config:", error);
+      }
+    };
+
+    fetchMapboxConfig();
+  }, []);
   // console.log(houseClickedData);
 
   const handleToggleFilter = (event: any) => {
@@ -367,12 +385,8 @@ const Home: NextPage = () => {
   const divRef: any = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (divRef.current) {
-      console.log("app render");
-    }
-
-    mapboxgl.accessToken =
-      "pk.eyJ1Ijoia2VubmV0aG1lamlhIiwiYSI6ImNsZG1oYnpxNDA2aTQzb2tkYXU2ZWc1b3UifQ.PxO_XgMo13klJ3mQw1QxlQ";
+    if (mapboxConfig && divRef.current) {
+      mapboxgl.accessToken = mapboxConfig.mapboxToken;
 
     const formulaForZoom = () => {
       if (window.innerWidth > 700) {
@@ -390,7 +404,7 @@ const Home: NextPage = () => {
 
     var mapparams: any = {
       container: divRef.current, // container ID
-      style: "mapbox://styles/kennethmejia/clhqigqkf00bv01rf27jdg7jm", // style URL
+      style: mapboxConfig.mapboxStyle,
       center: [-118.41, 34], // starting position [lng, lat]
       zoom: formulaForZoom(), // starting zoom
     };
@@ -1013,7 +1027,7 @@ const Home: NextPage = () => {
     }
 
     var mapname = "housingv2";
-  }, [selectAll]);
+  }}, [selectAll, mapboxConfig]);
   useEffect(() => {
     const optionsCd = CouncilDist.features.map(
       (feature) => feature.properties.dist_name
